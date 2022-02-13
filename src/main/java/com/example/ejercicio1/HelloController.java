@@ -2,6 +2,8 @@ package com.example.ejercicio1;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -18,11 +20,15 @@ import java.math.BigDecimal;
 import java.net.URL;
 import java.sql.*;
 import java.util.Calendar;
+import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class HelloController implements Initializable {
+
+    @FXML
+    public TextField searchField;
 
     @FXML
     private TextField idField;
@@ -67,33 +73,67 @@ public class HelloController implements Initializable {
     private TableColumn<Books, Integer> pagesColumn;
 
 
-    ObservableList<Books> booksList = FXCollections.observableArrayList();
+    public void search(){
+        ObservableList<Books> list = getBooksList();
+        FilteredList<Books>filteredData= new FilteredList<> (list,b ->true );
+        searchField.textProperty ().addListener ((observableValue, oldValue, newValue) -> {
+        filteredData.setPredicate (Books -> {
+            if(newValue.isEmpty () || newValue.isBlank ()){
+                return true;
+            }
+            String searchKeyword=newValue.toLowerCase();
+
+            if(String.valueOf (Books.getId ()).contains (searchKeyword)) {
+                return true;
+            }
+            else if(Books.getTitle ().contains (searchKeyword)){
+                return true;
+            }
+            else if(Books.getAuthor ().toLowerCase ().contains (searchKeyword)){
+                return true;
+            }
+            else if(String.valueOf (Books.getYear ()).contains (searchKeyword)){
+                return true;
+            }else if(String.valueOf (Books.getPages ()).contains (searchKeyword)){
+                return true;
+            }else{
+                return false;
+            }
+
+        });
+        });
+
+        SortedList<Books>sortedData=new SortedList<> (filteredData);
+        sortedData.comparatorProperty ().bind (TableView.comparatorProperty ());
+        TableView.setItems (sortedData);
+    }
 
 
-    @FXML
-    private void insertButton() {
-        String query = "insert into books (Title,Author,Year,Pages)"+"values('"+ titleField.getText()+"','"+authorField.getText()+"','"+yearField.getText()+"','"+ pagesField.getText()+"')";
-        executeQuery(query);
-        clean ();
+        @FXML
+        public void insertButton () {
+
+            String query = "insert into books (Title,Author,Year,Pages)" + "values('" + titleField.getText () + "','" + authorField.getText () + "','" + yearField.getText () + "','" + pagesField.getText () + "')";
+            executeQuery (query);
+            clean ();
+            showBooks ();
+    }
+
+
+        @FXML
+        public void updateButton () {
+        String query = "UPDATE books SET Title='" + titleField.getText () + "',Author='" + authorField.getText () + "',Year=" + yearField.getText () + ",Pages=" + pagesField.getText () + " WHERE ID=" + idField.getText () + "";
+        executeQuery (query);
         showBooks ();
-
     }
-
-    @FXML
-    public void updateButton () {
-        String query = "UPDATE books SET Title='"+titleField.getText()+"',Author='"+authorField.getText()+"',Year="+yearField.getText()+",Pages="+pagesField.getText()+" WHERE ID="+idField.getText()+"";
-        executeQuery(query);
-        showBooks();
-    }
-    @FXML
-    public void deleteButton () {
-        String query = "DELETE FROM books WHERE ID="+idField.getText()+"";
-        executeQuery(query);
-        showBooks();
+        @FXML
+        public void deleteButton () {
+        String query = "DELETE FROM books WHERE ID=" + idField.getText () + "";
+        executeQuery (query);
+        showBooks ();
         clean ();
     }
 
-    public void clean() {
+        public void clean () {
         idField.setText ("");
         titleField.setText ("");
         authorField.setText ("");
@@ -101,9 +141,9 @@ public class HelloController implements Initializable {
         pagesField.setText ("");
 
     }
-    public void selection(){
+        public void selection () {
 
-        Books b1=TableView.getItems ().get (TableView.getSelectionModel ().getSelectedIndex ());
+        Books b1 = TableView.getItems ().get (TableView.getSelectionModel ().getSelectedIndex ());
 
         idField.setText (String.valueOf (b1.getId ()));
         titleField.setText (b1.getTitle ());
@@ -112,66 +152,75 @@ public class HelloController implements Initializable {
         pagesField.setText (String.valueOf (b1.getPages ()));
     }
 
-    public void executeQuery(String query) {
-        Connection conn = getConnection();
+        public void executeQuery (String query){
+        Connection conn = getConnection ();
         Statement st;
         try {
-            st = conn.createStatement();
-            st.executeUpdate(query);
+            st = conn.createStatement ();
+            st.executeUpdate (query);
         } catch (Exception e) {
-            e.printStackTrace();
+            e.printStackTrace ();
         }
     }
 
-    public Connection getConnection() {
+        public Connection getConnection () {
         Connection conn;
         try {
-            conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/bdbooks","root","");
+            conn = DriverManager.getConnection ("jdbc:mysql://localhost:3306/bdbooks", "root", "");
             return conn;
-        }
-        catch (Exception e){
-            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace ();
             return null;
         }
     }
 
-    public void showBooks() {
-        ObservableList<Books> list = getBooksList();
+        public void showBooks () {
 
-        idColumn.setCellValueFactory(new PropertyValueFactory<> ("id"));
-        titleColumn.setCellValueFactory(new PropertyValueFactory<>("title"));
-        authorColumn.setCellValueFactory(new PropertyValueFactory<>("author"));
-        yearColumn.setCellValueFactory(new PropertyValueFactory<>("year"));
-        pagesColumn.setCellValueFactory(new PropertyValueFactory<>("pages"));
+            ObservableList<Books> list = getBooksList ();
 
-        TableView.setItems(list);
+            idColumn.setCellValueFactory (new PropertyValueFactory<> ("id"));
+            titleColumn.setCellValueFactory (new PropertyValueFactory<> ("title"));
+            authorColumn.setCellValueFactory (new PropertyValueFactory<> ("author"));
+            yearColumn.setCellValueFactory (new PropertyValueFactory<> ("year"));
+            pagesColumn.setCellValueFactory (new PropertyValueFactory<> ("pages"));
+
+            TableView.setItems (list);
+
     }
 
-    public ObservableList<Books> getBooksList(){
-        ObservableList<Books> booksList = FXCollections.observableArrayList();
-        Connection connection = getConnection();
-        String query = "SELECT ID,Title,Author,Year,Pages FROM books";
-        Statement st;
-        ResultSet rs;
+        public ObservableList<Books> getBooksList () {
 
-        try {
-            st = connection.createStatement();
-            rs = st.executeQuery(query);
-            Books books;
-            while(rs.next()) {
-                books = new Books(rs.getInt("Id"),rs.getString("Title"),rs.getString("Author"),rs.getInt("Year"),rs.getInt("Pages"));
-                booksList.add(books);
+            ObservableList<Books> booksList = FXCollections.observableArrayList ();
+            Connection connection = getConnection ();
+            String query = "SELECT ID,Title,Author,Year,Pages FROM books";
+            Statement st;
+            ResultSet rs;
+
+            try {
+                st = connection.createStatement ();
+                rs = st.executeQuery (query);
+                Books books;
+                while (rs.next ()) {
+                    books = new Books (rs.getInt ("Id"), rs.getString ("Title"), rs.getString ("Author"), rs.getInt ("Year"), rs.getInt ("Pages"));
+                    booksList.add (books);
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace ();
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return booksList;
+
+
+            return booksList;
+
     }
 
 
     @Override
     public void initialize (URL url, ResourceBundle resourceBundle) {
 
-            showBooks ();
+               showBooks ();
+               search ();
+
+
     }
 }

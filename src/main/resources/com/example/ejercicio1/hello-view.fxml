@@ -22,7 +22,7 @@
        <Button fx:id="insertButton" layoutX="20.0" layoutY="329.0" mnemonicParsing="false" onAction="#insertButton" prefHeight="30.0" prefWidth="60.0" text="Insert" />
        <Button fx:id="updateButton" layoutX="89.0" layoutY="329.0" mnemonicParsing="false" onAction="#updateButton" prefHeight="30.0" prefWidth="60.0" text="Update" />
        <Button fx:id="deleteButton" layoutX="164.0" layoutY="329.0" mnemonicParsing="false" onAction="#deleteButton" prefHeight="30.0" prefWidth="60.0" text="Delete" />
-      <TableView fx:id="TableView" layoutX="253.0" layoutY="103.0" onMouseClicked="#selection" prefHeight="256.0" prefWidth="396.0">
+      <TableView fx:id="TableView" layoutX="253.0" layoutY="103.0" onMousePressed="#selection" prefHeight="256.0" prefWidth="396.0">
         <columns>
             <TableColumn fx:id="idColumn" prefWidth="35.0" text="ID" />
             <TableColumn fx:id="titleColumn" prefWidth="120.0" text="Title" />
@@ -31,5 +31,7 @@
             <TableColumn fx:id="pagesColumn" prefWidth="60.0" text="Pages" />
         </columns>
       </TableView>
+      <Label layoutX="253.0" layoutY="377.0" text="Buscar:" />
+      <TextField fx:id="searchField" layoutX="309.0" layoutY="373.0" />
    </children>
 </AnchorPane>
