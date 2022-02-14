@@ -1,0 +1,21 @@
+<component name="libraryTable">
+  <library name="barcodes-7.1.16">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/Desktop/Itex 7/barcodes-7.1.16.jar!/" />
+      <root url="jar://$USER_HOME$/Desktop/Itex 7/forms-7.1.16.jar!/" />
+      <root url="jar://$USER_HOME$/Desktop/Itex 7/io-7.1.16.jar!/" />
+      <root url="jar://$USER_HOME$/Desktop/Itex 7/kernel-7.1.16.jar!/" />
+      <root url="jar://$USER_HOME$/Desktop/Itex 7/layout-7.1.16.jar!/" />
+      <root url="jar://$USER_HOME$/Desktop/Itex 7/pdfa-7.1.16.jar!/" />
+      <root url="jar://$USER_HOME$/Desktop/Itex 7/pdftest-7.1.16.jar!/" />
+      <root url="jar://$USER_HOME$/Desktop/Itex 7/sign-7.1.16.jar!/" />
+      <root url="jar://$USER_HOME$/Desktop/Itex 7/slf4j-api-1.7.9.jar!/" />
+      <root url="jar://$USER_HOME$/Desktop/Itex 7/slf4j-log4j12-1.7.9.jar!/" />
+      <root url="jar://$USER_HOME$/Desktop/Itex 7/styled-xml-parser-7.1.16.jar!/" />
+      <root url="jar://$USER_HOME$/Desktop/Itex 7/svg-7.1.16.jar!/" />
+      <root url="jar://$USER_HOME$/Desktop/log4j.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
